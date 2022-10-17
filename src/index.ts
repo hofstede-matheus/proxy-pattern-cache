@@ -1,9 +1,7 @@
 import "reflect-metadata";
-import './di/containers'
-import { inject, container } from 'tsyringe'
+import './di/main-container'
+import { container } from 'tsyringe'
 import { CatsController } from './controllers/CatsController'
-import { GetCatsUseCase } from "./interactors/GetCatsUseCase";
-import { InMemmoryCatsRepository } from "./repositories/InMemmoryCatsRepository";
 
 const catsController = container.resolve(CatsController)
 

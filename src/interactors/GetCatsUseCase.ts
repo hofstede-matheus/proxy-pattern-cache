@@ -7,7 +7,7 @@ export class GetCatsUseCase implements UseCase {
   constructor(@inject(CatsRepositoryToken) private catsRepository: CatsRepository) { }
 
   async execute(): Promise<Either<Error, any>> {
-    const cats = this.catsRepository.getCats()
+    const cats = await this.catsRepository.getCats()
     if (!cats) return left(Error("Error getting cats"))
     return right(cats)
   }
