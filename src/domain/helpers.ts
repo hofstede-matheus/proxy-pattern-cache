@@ -46,31 +46,31 @@ export const right = <L, A>(a: A): Either<L, A> => {
   return new Right<L, A>(a);
 };
 
-export interface Cacheable<Data, ExpireCondition> {
+export interface Cacheable<Data, ExpireCondition, TTL> {
   readonly value: Data | undefined;
+  readonly ttl: TTL;
   readonly expiresAt: ExpireCondition;
 }
 
-interface Proxy<TTL> {
-  ttl: TTL;
+interface Proxy {
   proxy<Data>(source: () => any): Promise<Data | undefined>
 }
 
-export class CacheProxy implements Proxy<number> {
-  ttl: number = 2000;
+export class CacheProxy implements Proxy {
   async proxy<Data>(source: () => any): Promise<Data | undefined> {
-    const cacheable = container.resolve<Cacheable<Data, Date>>(source.name);
+    const cacheable = container.resolve<Cacheable<Data, Date, number>>(source.name);
 
     if (new Date() < cacheable.expiresAt) {
       return cacheable.value;
     }
     else {
       const result = await source();
-      container.registerInstance<Cacheable<Data[], Date>>(
+      container.registerInstance<Cacheable<Data[], Date, number>>(
         source.name,
         {
           value: result,
-          expiresAt: new Date(new Date().getTime() + this.ttl),
+          ttl: cacheable.ttl,
+          expiresAt: new Date(new Date().getTime() + cacheable.ttl),
         }
       )
       return source();

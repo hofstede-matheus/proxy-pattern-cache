@@ -13,7 +13,7 @@ container.registerInstance<string>(
 
 container.registerSingleton<CatsRepository>(generateProxeeToken(CatsRepositoryToken), FileCatsRepository)
 container.registerSingleton<CatsRepository>(CatsRepositoryToken, CatsRepositoryProxy)
-container.registerInstance<Cacheable<Cat[], Date>>("getCats", { value: undefined, expiresAt: new Date() })
+container.registerInstance<Cacheable<Cat[], Date, number>>("getCats", { value: undefined, ttl: 2000, expiresAt: new Date() })
 
 container.register(GetCatsUseCase, GetCatsUseCase)
 container.register(CatsController, CatsController)

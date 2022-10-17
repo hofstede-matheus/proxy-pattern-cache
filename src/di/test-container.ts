@@ -13,10 +13,11 @@ container.registerInstance<string>(
 
 container.registerSingleton<CatsRepository>("Proxee" + CatsRepositoryToken.toString(), FileCatsRepository)
 
-container.registerInstance<Cacheable<Cat[], Date>>(
+container.registerInstance<Cacheable<Cat[], Date, number>>(
   "getCats",
   {
     value: undefined,
+    ttl: 2000,
     expiresAt: new Date()
   }
 )
