@@ -56,7 +56,7 @@ interface Proxy {
   proxy<Data>(source: () => any): Promise<Data | undefined>
 }
 
-export class CacheProxy implements Proxy {
+export class InMemmoryCacheProxy implements Proxy {
   async proxy<Data>(source: () => any): Promise<Data | undefined> {
     const cacheable = container.resolve<Cacheable<Data, Date, number>>(source.name);
 
