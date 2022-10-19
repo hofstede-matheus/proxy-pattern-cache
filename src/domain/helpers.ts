@@ -58,22 +58,22 @@ interface Proxy {
 
 export class InMemmoryCacheProxy implements Proxy {
   async proxy<Data>(source: () => any): Promise<Data | undefined> {
-    const cacheable = container.resolve<Cacheable<Data, Date, number>>(source.name);
+    const dataFromCache = container.resolve<Cacheable<Data, Date, number>>(source.name);
 
-    if (new Date() < cacheable.expiresAt) {
-      return cacheable.value;
+    if (new Date() < dataFromCache.expiresAt) {
+      return dataFromCache.value;
     }
     else {
-      const result = await source();
+      const dataFromRealSource = await source();
       container.registerInstance<Cacheable<Data[], Date, number>>(
         source.name,
         {
-          value: result,
-          ttl: cacheable.ttl,
-          expiresAt: new Date(new Date().getTime() + cacheable.ttl),
+          value: dataFromRealSource,
+          ttl: dataFromCache.ttl,
+          expiresAt: new Date(new Date().getTime() + dataFromCache.ttl),
         }
       )
-      return source();
+      return dataFromRealSource;
     }
   }
 }
